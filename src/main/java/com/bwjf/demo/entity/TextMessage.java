@@ -17,7 +17,7 @@ public class TextMessage extends BaseMessage {
 
     public TextMessage(Map<String, String> respMap,String content) {
         super(respMap);
-        this.setMsgType("text");
+        setMsgType("text");
         this.content = content;
     }
 

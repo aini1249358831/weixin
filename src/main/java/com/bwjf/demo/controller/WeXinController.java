@@ -1,10 +1,9 @@
 package com.bwjf.demo.controller;
-import com.bwjf.demo.entity.BaseMessage;
-import com.bwjf.demo.entity.TextMessage;
 import com.bwjf.demo.util.CheckUtil;
 import com.bwjf.demo.util.GetRespXml;
 import com.bwjf.demo.util.MapWithXml;
-import com.thoughtworks.xstream.XStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class WeXinController {
+    static Logger logger = LoggerFactory.getLogger(WeXinController.class);
+    public static  String appID  = "wxfecc5fedc62a1e42";
+    public static  String appsecret = "f5dff1cfe24b2601a62a4b730b2ab51a";
+    public static  String url =  "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET"
+            .replace("appid",appID).replace("secret",appsecret);
     @GetMapping
     public String get(HttpServletRequest request, HttpServletResponse response){
         String signature = request.getParameter("signature");
@@ -42,13 +46,12 @@ public class WeXinController {
     }
       @PostMapping
     public String post(HttpServletRequest request,HttpServletResponse response) throws IOException {
-
               Map<String, String> map = MapWithXml.parseRequest(request.getInputStream());
-              System.out.println(map);
               /**准备回复的数据包*/
               /**注解 @Xstream*/
           String respXml =  GetRespXml.getResponse(map);
-          System.out.println(respXml);
+          logger.info("响应的xml信息"+respXml);
+          response.setContentType("application/xml; charset=utf-8");
           PrintWriter writer = response.getWriter();
           writer.print(respXml);
           writer.flush();
